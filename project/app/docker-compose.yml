@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  api:
+    build: ./server
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server/src:/app/server
+      - ./server/db:/app/db
+    environment:
+      - ENVIRONMENT=development
+    networks:
+      - app-network
+
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+
+  db:
+    image: nouchka/sqlite3
+    volumes:
+      - ./db:/root/db
+    environment:
+      - SQLITE_DATABASE=/root/db/sqlite.db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
